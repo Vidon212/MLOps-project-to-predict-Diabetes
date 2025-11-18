@@ -46,18 +46,23 @@ source .mlops/bin/activate
 pip install -r requirements.txt
 ```
 
-## Train the Model (produces `diabetes_model.pkl`)
+## Train the Model (produces `diabetes_model.pkl` + `diabetes_model_meta.json`)
 
 ```bash
 python train.py
+# or with overrides:
+# DATA_URL, MODEL_PATH and MODEL_METADATA_PATH are optional environment variables
+# DATA_URL=https://your-source/diabetes.csv MODEL_PATH=diabetes_model.pkl MODEL_METADATA_PATH=diabetes_model_meta.json python train.py
 ```
 
 ## Run the API Locally
 
 ```bash
+export MODEL_PATH=diabetes_model.pkl
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 # in another terminal
 curl -s http://localhost:8000/
+curl -s http://localhost:8000/health
 curl -s -X POST http://localhost:8000/predict \
   -H 'Content-Type: application/json' \
   -d '{"Pregnancies":2,"Glucose":130,"BloodPressure":70,"BMI":28.5,"Age":45}'
